@@ -5,6 +5,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import TimeTracker from './components/TimeTracker';
+import Graph from './components/Graph';
 
 const App = () => {
     const [value, setValue] = React.useState('1');
@@ -21,7 +22,7 @@ const App = () => {
                     </TabList>
                 </Box>
                 <TabPanel value="1"><TimeTracker/></TabPanel>
-                <TabPanel value="2">Component2</TabPanel>
+                <TabPanel value="2"><Graph/></TabPanel>
             </TabContext>
         </Box>
 
