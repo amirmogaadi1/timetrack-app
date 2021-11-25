@@ -10,10 +10,9 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import moment from "moment";
 
-const TimeTracker = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+import {uuidv} from "../utils/uuidv";
 
-    let [data] = useState([]);
+const TimeTracker = () => {
 
     const boxStyle = {
         position: 'absolute',
@@ -28,6 +27,13 @@ const TimeTracker = () => {
         px: 4,
         pb: 3,
     };
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [updateElementId, setUpdateElementId] =  useState(null);
+
+    // get the actualData from localStorage or initiate it to []
+    const [data, setData] = useState(JSON.parse(localStorage.getItem('data')) || []);
 
 
     // start & end dates used by the datePicker
@@ -52,7 +58,7 @@ const TimeTracker = () => {
         setStartDate(null);
         setEndDate(null);
     }
-
+    
     const handleAdd = () => {
         // check if start & end dates are entered
         if (!startDate || !endDate) {
@@ -65,20 +71,56 @@ const TimeTracker = () => {
                 alert('Start/end date not valid');
             } else {
                 // add timeFrame to data array
-                data.push(
-                    {
-                        startDate: moment(startDate).toISOString(),
-                        endDate: moment(endDate).toISOString(),
-                        durationString,
-                        duration,
-                    });
-                localStorage.setItem('workData', JSON.stringify(data));
-                setIsModalOpen(false);
-                resetFields();
-                alert('Time frame added');
+                    data.push(
+                        {
+                            id: uuidv(),
+                            startDate: moment(startDate).toISOString(),
+                            endDate: moment(endDate).toISOString(),
+                            durationString,
+                            duration,
+                        });
+                    localStorage.setItem('data', JSON.stringify(data));
+                    alert('Time frame added');
+                    setUpdateElementId(null);
+                    resetFields();
+                    setIsModalOpen(false);
             }
         }
     }
+
+    const handleSave = () => {
+        if (!startDate || !endDate) {
+            alert('Start & end dates are required');
+        } else {
+            const duration = moment.duration(moment(endDate).diff(moment(startDate))).asHours();
+            const durationString = extractDurationString(moment.duration(moment.duration(moment(endDate).diff(moment(startDate)))._milliseconds));
+            if (duration <= 0) {
+                alert('Start/end date not valid');
+            } else {
+                const updateIndex = data.findIndex(
+                    (e) => e.id === updateElementId
+                );
+                const newData = [
+                    ...data.slice(0, updateIndex),
+                    {
+                        id: updateElementId,
+                        startDate: moment(startDate).toISOString(),
+                        endDate: moment(endDate).toISOString(),
+                        duration,
+                        durationString,
+                    },
+                    ...data.slice(updateIndex + 1),
+                ];
+                setData(newData);
+                localStorage.setItem('data', JSON.stringify(newData));
+                alert('Time frame updated');
+                setIsModalOpen(false);
+                setUpdateElementId(null);
+                resetFields();
+            }
+        }
+    };
+
 
     return (
         <Box sx={{
@@ -117,18 +159,21 @@ const TimeTracker = () => {
                         </Stack>
                     </LocalizationProvider>
                     <div className="buttons-container">
-                        <Button 
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => handleAdd()}
-                        >
-                            Add
-                        </Button>
-                        <Button 
-                            variant="outlined"
-                            color="error"
-                            onClick={() => setIsModalOpen(false)}
-                        >
+                    {
+                        updateElementId ? (
+                            <Button variant="outlined" color="primary" onClick={() => {
+                                handleSave();
+                            }}>Save</Button>
+                        ) : (
+                            <Button variant="outlined" color="primary" onClick={() => {
+                                handleAdd();
+                            }}>Add</Button>
+                        )
+                    }
+                        <Button onClick={() => {
+                            setIsModalOpen(false);
+                            resetFields();
+                        }}>
                             Close
                         </Button>
                     </div>
@@ -140,6 +185,7 @@ const TimeTracker = () => {
                     <th scope="col">Start</th>
                     <th scope="col">End</th>
                     <th scope="col">Duration(HH:mm)</th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -150,6 +196,18 @@ const TimeTracker = () => {
                                 <td>{moment(value.startDate).format('DD-MM-YYYY HH:mm')}</td>
                                 <td>{moment(value.endDate).format('HH:mm')}</td>
                                 <td>{value.durationString}</td>
+                                <td>
+                                    <Button  variant="outlined" color="primary" style={{ marginRight: 10}} onClick={() => {
+                                        setUpdateElementId(value.id);
+                                        setStartDate(value.startDate);
+                                        setEndDate(value.endDate);
+                                        setIsModalOpen(true);
+                                    }}>Update</Button>
+                                    <Button  variant="outlined" color="error" onClick={() => {
+                                        setData(data.filter((e) => e.id !== value.id));
+                                        localStorage.setItem('data', JSON.stringify(data.filter((e) => e.id !== value.id)));
+                                    }}>Delete</Button>
+                                </td>
                             </tr>
                         )
                     })
