@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/timetrack-app/static/css/main.08bb9641.chunk.css",
+    "main.js": "/timetrack-app/static/js/main.f114ba02.chunk.js",
+    "main.js.map": "/timetrack-app/static/js/main.f114ba02.chunk.js.map",
+    "runtime-main.js": "/timetrack-app/static/js/runtime-main.38a4f247.js",
+    "runtime-main.js.map": "/timetrack-app/static/js/runtime-main.38a4f247.js.map",
+    "static/js/2.2c0e5752.chunk.js": "/timetrack-app/static/js/2.2c0e5752.chunk.js",
+    "static/js/2.2c0e5752.chunk.js.map": "/timetrack-app/static/js/2.2c0e5752.chunk.js.map",
+    "static/js/3.029abedf.chunk.js": "/timetrack-app/static/js/3.029abedf.chunk.js",
+    "static/js/3.029abedf.chunk.js.map": "/timetrack-app/static/js/3.029abedf.chunk.js.map",
+    "index.html": "/timetrack-app/index.html",
+    "static/css/main.08bb9641.chunk.css.map": "/timetrack-app/static/css/main.08bb9641.chunk.css.map",
+    "static/js/2.2c0e5752.chunk.js.LICENSE.txt": "/timetrack-app/static/js/2.2c0e5752.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.38a4f247.js",
+    "static/js/2.2c0e5752.chunk.js",
+    "static/css/main.08bb9641.chunk.css",
+    "static/js/main.f114ba02.chunk.js"
+  ]
+}
